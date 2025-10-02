@@ -5,18 +5,22 @@ Parameters:
   BucketName:
     Type: String
     Description: S3 bucket where the output is stored
+    Default: default-bucket-name-268
 
   BucketKey:
     Type: String
     Description: S3 key for environment
+    Default: default-bucket-key-268
 
   DynamoDBDeploymentTrackingTableName:
     Type: String
     Description: Deployment tracking table
+    Default: default-DDB-1
 
   DynamoDBResumeAnalyticsTableName:
     Type: String
     Description: Resume analytics table
+    Default: default-DDB-2
 
 Resources:
 
