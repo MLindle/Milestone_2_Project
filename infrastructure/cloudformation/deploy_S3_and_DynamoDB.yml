@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy resources for milestone project
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: S3 bucket where the output is stored
+
+  BucketKey:
+    Type: String
+    Description: S3 key for environment
+
+  DynamoDBDeploymentTrackingTableName:
+    Type: String
+    Description: Deployment tracking table
+
+  DynamoDBResumeAnalyticsTableName:
+    Type: String
+    Description: Resume analytics table
+
+Resources:
+
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - actions.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+  
+  S3PutObjectPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3PutObjectPolicy
+      Roles:
+        - !Ref GitHubActionsRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:PutObject"
+            Resource: 
+              - !Sub "arn:aws:s3:::${BucketName}/${BucketKey}/*"
+
+  DynamoDBWritePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: DynamoDBWritePolicy
+      Roles:
+        - !Ref GitHubActionsRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+            Resource:
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBDeploymentTrackingTableName}"
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBResumeAnalyticsTableName}"
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      Tags: 
+        - MyTag
+      VersioningConfiguration: 
+        Status: Enabled
+
+  DynamoDBDeploymentTrackingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoDBDeploymentTrackingTableName
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        - Key: "Environment"
+          Value: !Ref Environment
+
+  DynamoDBResumeAnalyticsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoDBResumeAnalyticsTableName
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        - Key: "Environment"
+          Value: !Ref Environment
