@@ -22,6 +22,11 @@ Parameters:
     Description: Resume analytics table
     Default: default-DDB-2
 
+  Environment:
+    Type: String
+    Description: Environment name
+    Default: beta
+
 Resources:
 
   GitHubActionsRole:
