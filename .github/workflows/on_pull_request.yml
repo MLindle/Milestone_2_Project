@@ -24,7 +24,8 @@ jobs:
                   --template-file infrastructure/cloudformation/deploy_S3_and_DynamoDB.yml \
                   --capabilities CAPABILITY_NAMED_IAM \
                   --parameter-overrides \
-                    BucketName=${{ secrets.S3_BUCKET }}
-                    BucketKey=${{ secrets.S3_BUCKET_KEY}}
-                    DynamoDBDeploymentTrackingTableName=${{ secrets.DYNAMO_DB_TABLE_DEPLOYMENT_TRACKING }}
-                    DynamoDBResumeAnalyticsTableName=${{ secrets.DYNAMO_DB_TABLE_RESUME_ANALYTICS }}
+                    BucketName=${{ secrets.S3_BUCKET }} \
+                    BucketKey=${{ secrets.S3_BUCKET_KEY}} \
+                    DynamoDBDeploymentTrackingTableName=${{ secrets.DYNAMO_DB_TABLE_DEPLOYMENT_TRACKING }} \
+                    DynamoDBResumeAnalyticsTableName=${{ secrets.DYNAMO_DB_TABLE_RESUME_ANALYTICS }} \
+                    Environment=beta
