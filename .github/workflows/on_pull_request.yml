@@ -20,7 +20,7 @@ jobs:
             - name: Deploy CFN Stack
               run: |
                 aws cloudformation deploy \
-                  --stack-name {{ secrets.CFN_STACK_NAME }} \
+                  --stack-name ${{ secrets.CFN_STACK_NAME }} \
                   --template-file infrastructure/cloudformation/deploy_S3_and_DynamoDB.yml \
                   --capabilities CAPABILITY_NAMED_IAM \
                   --parameter-overrides \
