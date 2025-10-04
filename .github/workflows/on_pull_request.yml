@@ -30,27 +30,29 @@ jobs:
                   DynamoDBResumeAnalyticsTableName=${{ secrets.DYNAMO_DB_TABLE_RESUME_ANALYTICS }} \
                   Environment=beta
 
-  run_script:
-    runs-on: ubuntu-latest
+          - name: run_script
+            uses: actions/checkout@v5
 
-    steps:
-      - uses: actions/checkout@v5
+          - uses: action/setup-python@v5
+            with:
+              python-version: "3.11"
 
-      - uses: action/setup-python@v5
-        with:
-          python-version: "3.11"
+          - name: Execute script
+            run: process_resume.py
 
-      - name: Execute script
-        run: process_resume.py
+          - name: AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              aws-access-key-id:      ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region:             ${{ secrets.AWS_REGION }}
 
-  upload_file:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
+          - name: upload_file
+            uses: actions/checkout@v5
 
-      - name: Upload file to S3 to trigger Lambda
-        env:
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          S3_PATH:   ${{ secrets.S3_BUCKET_KEY }}
-        run: |
-          aws s3 sync "converted_resume.html" "s3://$S3_BUCKET/${S3_PATH%}/"
+          - name: Upload file to S3 to trigger Lambda
+            env:
+              S3_BUCKET: ${{ secrets.S3_BUCKET }}
+              S3_PATH:   ${{ secrets.S3_BUCKET_KEY }}
+            run: |
+              aws s3 sync "converted_resume.html" "s3://$S3_BUCKET/${S3_PATH%}/"
