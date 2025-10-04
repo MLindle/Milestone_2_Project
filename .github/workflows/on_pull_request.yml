@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout
+      - uses: actions/checkout@v5
 
       - uses: action/setup-python@v5
         with:
