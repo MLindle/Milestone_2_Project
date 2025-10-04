@@ -1,0 +1,5 @@
+{"ats_score": "Score as integer value",
+"word_count": "Word count as integer value",
+"keywords": ["First Keyword","Second Keyword","Third Keyword","All other keywords in this format"],
+"readability_score": "Readability score as integer value",
+"missing_sections": "Any missing sections listed here"}
