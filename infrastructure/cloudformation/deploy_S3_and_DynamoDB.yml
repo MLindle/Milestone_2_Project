@@ -29,25 +29,25 @@ Parameters:
 
 Resources:
 
-  GitHubActionsRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - actions.amazonaws.com
-            Action:
-              - "sts:AssumeRole"
+  LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
   
   S3PutObjectPolicy:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName: S3PutObjectPolicy
       Roles:
-        - !Ref GitHubActionsRole
+        - !Ref LambdaExecutionRole
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -62,7 +62,7 @@ Resources:
     Properties:
       PolicyName: DynamoDBWritePolicy
       Roles:
-        - !Ref GitHubActionsRole
+        - !Ref LambdaExecutionRole
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
