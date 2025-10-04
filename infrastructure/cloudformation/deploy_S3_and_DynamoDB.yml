@@ -79,7 +79,8 @@ Resources:
     Properties:
       BucketName: !Ref BucketName
       Tags: 
-        - MyTag
+        - Key: MyTag
+          Value: TagValue
       VersioningConfiguration: 
         Status: Enabled
 
