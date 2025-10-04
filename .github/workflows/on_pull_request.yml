@@ -38,7 +38,7 @@ jobs:
               python-version: "3.11"
 
           - name: Execute script
-            run: process_resume.py
+            run: python process_resume.py
 
           - name: AWS Credentials
             uses: aws-actions/configure-aws-credentials@v4

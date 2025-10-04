@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import boto3, json
 
 s3 = boto3.client('s3')
