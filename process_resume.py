@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-# import boto3, json, os
-# from datetime import datetime, timezone
+import boto3, json, os
+from datetime import datetime, timezone
 
 # s3 = boto3.client('s3')
 # bedrock = boto3.client('bedrock-runtime', region_name='us-east-1')
-# dynamodb = boto3.client('dynamodb')
+dynamodb = boto3.client('dynamodb')
 
 # resume_contents = open("resume_template.md", "r").read()
 
@@ -91,7 +91,7 @@
 
 #print (ats_score, word_count, keywords, readability_score, missing_sections)
 
-# current_utc_datetime = datetime.now(timezone.utc).isoformat()
+current_utc_datetime = datetime.now(timezone.utc).isoformat()
 # print (current_utc_datetime)
 
 # response = dynamodb.put_item(
@@ -105,11 +105,24 @@
     
 # )
 
-# github_commit_sha = os.getenv("GITHUB_SHA", "")
-# deployment_status = os.getenv("DEPLOY_STATUS", "unknown")
-# deployment_environment = os.getenv("ENVIRONMENT", "")
-# model_used = "anthropic.claude-3-sonnet"
-# s3_url = os.getenv("S3_URL", "")
+github_commit_sha = os.getenv("GITHUB_SHA", "")
+deployment_status = os.getenv("DEPLOY_STATUS", "unknown")
+deployment_environment = os.getenv("ENVIRONMENT", "")
+model_used = "anthropic.claude-3-sonnet"
+s3_url = os.getenv("S3_URL", "")
+
+response = dynamodb.put_item(
+    TableName='Milestone-2-project-deployment-tracking-table',
+    Item={
+        'timestamp': {'S': current_utc_datetime},
+        'github_commit_sha': {'S': github_commit_sha},
+        'deployment_status': {'S': deployment_status},
+        'deployment_environment': {'S': deployment_environment},
+        'model_used': {'S': model_used},
+        's3_url': {'S': s3_url}
+
+        }
+)
 
 # with open("converted_resume.html", "w") as f:
 #     f.write(br_results)
