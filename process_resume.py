@@ -107,7 +107,7 @@
 
 # github_commit_sha = os.getenv("GITHUB_SHA", "")
 # deployment_status = os.getenv("DEPLOY_STATUS", "unknown")
-# deployment_environment = os.getenv("DEPLOYMENT_ENV", "")
+# deployment_environment = os.getenv("ENVIRONMENT", "")
 # model_used = "anthropic.claude-3-sonnet"
 # s3_url = os.getenv("S3_URL", "")
 
