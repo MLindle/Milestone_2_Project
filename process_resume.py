@@ -10,8 +10,12 @@ dynamodb = boto3.client('dynamodb')
 current_utc_datetime = datetime.now(timezone.utc).isoformat()
 github_commit_sha = os.getenv("GITHUB_SHA", "")
 deployment_status = os.getenv("DEPLOY_STATUS", "unknown")
-deployment_environment = os.getenv("ENVIRONMENT", "")
 model_used = "anthropic.claude-3-sonnet"
+deployment_environment = os.getenv("ENVIRONMENT", "")
+
+if deployment_environment != 'beta':
+    deployment_environment = 'prod'
+
 s3_url = os.getenv("S3_URL", "")
 
 if deployment_environment == 'beta':
