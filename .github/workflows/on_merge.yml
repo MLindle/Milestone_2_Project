@@ -26,6 +26,10 @@ jobs:
             run: |
               aws s3 cp "s3://$S3_BUCKET/${S3_PATH%}/converted_resume.html" "s3://$S3_BUCKET/${S3_PATH_PROD%}/"
 
+              S3_URL="s3://$S3_BUCKET/${S3_PATH_PROD%}/"
+              echo "S3_URL=$S3_URL" >> $GITHUB_ENV
+              echo "DEPLOY_STATUS=success" >> $GITHUB_ENV
+
           - name: run_script
             uses: actions/checkout@v5
 
