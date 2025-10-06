@@ -1,0 +1,46 @@
+name: Deploy to BETA and run script
+
+on:
+    push:
+        branches: ['main']
+
+jobs:
+  deploy_resources:
+      runs-on: ubuntu-latest
+      steps: 
+          - name: AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              aws-access-key-id:      ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region:             ${{ secrets.AWS_REGION }}
+
+          - name: create_bucket_key
+            uses: actions/checkout@v5
+
+          - name: copy_results_to_prod
+            env:
+              S3_BUCKET: ${{ secrets.S3_BUCKET }}
+              S3_PATH: ${{ secrets.S3_BUCKET_KEY }}
+              S3_PATH_PROD: ${{ secrets.S3_BUCKET_KEY_PROD }}
+            run: |
+              aws s3 cp "s3://$S3_BUCKET/${S3_PATH%}/" "s3://$S3_BUCKET/${S3_PATH%}/"
+
+          - name: run_script
+            uses: actions/checkout@v5
+
+          - uses: actions/setup-python@v5
+            with:
+              python-version: "3.11"
+
+          - run: pip install -r requirements.txt
+
+          - name: Execute script
+            run: python process_resume.py
+
+          - name: AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              aws-access-key-id:      ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region:             ${{ secrets.AWS_REGION }}
