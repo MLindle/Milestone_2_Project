@@ -24,7 +24,7 @@ jobs:
               S3_PATH: ${{ secrets.S3_BUCKET_KEY }}
               S3_PATH_PROD: ${{ secrets.S3_BUCKET_KEY_PROD }}
             run: |
-              aws s3 cp "s3://$S3_BUCKET/${S3_PATH%}/" "s3://$S3_BUCKET/${S3_PATH%}/"
+              aws s3 cp "s3://$S3_BUCKET/${S3_PATH%}/" "s3://$S3_BUCKET/${S3_PATH_PROD%}/"
 
           - name: run_script
             uses: actions/checkout@v5
