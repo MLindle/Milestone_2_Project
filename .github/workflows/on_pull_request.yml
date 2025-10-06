@@ -1,0 +1,77 @@
+name: Deploy to BETA and run script
+
+on:
+    pull_request:
+        branches: ['main']
+
+jobs:
+  deploy_resources:
+      runs-on: ubuntu-latest
+      steps: 
+          - name: AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              aws-access-key-id:      ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region:             ${{ secrets.AWS_REGION }}
+
+          - uses: actions/checkout@v5
+
+          - name: Deploy CFN Stack
+            run: |
+              aws cloudformation deploy \
+                --stack-name ${{ secrets.CFN_STACK_NAME }} \
+                --template-file infrastructure/cloudformation/deploy_S3_and_DynamoDB.yml \
+                --capabilities CAPABILITY_NAMED_IAM \
+                --parameter-overrides \
+                  BucketName=${{ secrets.S3_BUCKET }} \
+                  BucketKey=${{ secrets.S3_BUCKET_KEY }} \
+                  DynamoDBDeploymentTrackingTableName=${{ secrets.DYNAMO_DB_TABLE_DEPLOYMENT_TRACKING }} \
+                  DynamoDBResumeAnalyticsTableName=${{ secrets.DYNAMO_DB_TABLE_RESUME_ANALYTICS }} \
+                  Environment=beta
+
+                echo "DEPLOY_STATUS=success" >> $GITHUB_ENV
+                echo "COMMIT_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
+                echo "ENVIRONMENT=beta" >> $GITHUB_ENV
+
+          - name: create_bucket_key
+            uses: actions/checkout@v5
+
+          - name: upload_key
+            env:
+              S3_BUCKET: ${{ secrets.S3_BUCKET }}
+              S3_PATH: ${{ secrets.S3_BUCKET_KEY }}
+            run: |
+              aws s3 cp "converted_resume.html" "s3://$S3_BUCKET/${S3_PATH%}/"
+
+              S3_URL="s3://$S3_BUCKET/${S3_PATH%}/"
+              echo "S3_URL=$S3_URL" >> $GITHUB_ENV
+
+          - name: run_script
+            uses: actions/checkout@v5
+
+          - uses: actions/setup-python@v5
+            with:
+              python-version: "3.11"
+
+          - run: pip install -r requirements.txt
+
+          - name: Execute script
+            run: python process_resume.py
+
+          - name: AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              aws-access-key-id:      ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region:             ${{ secrets.AWS_REGION }}
+
+          - name: upload_file
+            uses: actions/checkout@v5
+
+          - name: Upload results to S3
+            env:
+              S3_BUCKET: ${{ secrets.S3_BUCKET }}
+              S3_PATH:   ${{ secrets.S3_BUCKET_KEY }}
+            run: |
+              aws s3 cp "converted_resume.html" "s3://$S3_BUCKET/${S3_PATH%}/"

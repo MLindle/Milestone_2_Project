@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy resources for milestone project
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: S3 bucket where the output is stored
+    Default: default-bucket-name-268
+
+  BucketKey:
+    Type: String
+    Description: S3 key for environment
+    Default: default-bucket-key-268
+
+  DynamoDBDeploymentTrackingTableName:
+    Type: String
+    Description: Deployment tracking table
+    Default: default-DDB-1
+
+  DynamoDBResumeAnalyticsTableName:
+    Type: String
+    Description: Resume analytics table
+    Default: default-DDB-2
+
+  Environment:
+    Type: String
+    Description: Environment name
+    Default: beta
+
+Resources:
+
+  LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  
+  S3PutObjectPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3PutObjectPolicy
+      Roles:
+        - !Ref LambdaExecutionRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:PutObject"
+            Resource: 
+              - !Sub "arn:aws:s3:::${BucketName}/${BucketKey}/*"
+
+  DynamoDBWritePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: DynamoDBWritePolicy
+      Roles:
+        - !Ref LambdaExecutionRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+            Resource:
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBDeploymentTrackingTableName}"
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBResumeAnalyticsTableName}"
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      Tags: 
+        - Key: MyTag
+          Value: TagValue
+      VersioningConfiguration: 
+        Status: Enabled
+
+  DynamoDBDeploymentTrackingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoDBDeploymentTrackingTableName
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        - Key: "Environment"
+          Value: !Ref Environment
+
+  DynamoDBResumeAnalyticsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoDBResumeAnalyticsTableName
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        - Key: "Environment"
+          Value: !Ref Environment

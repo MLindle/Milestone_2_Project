@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>[Your Full Name]</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>[Your Full Name]</h1>
+    <p>[City, State]<br>
+    Email: <a href="mailto:[your.email@example.com]">[your.email@example.com]</a><br>
+    Phone: [Your Phone Number]<br>
+    LinkedIn: <a href="[LinkedIn Profile URL]" target="_blank">[LinkedIn Profile URL]</a><br>
+    GitHub: <a href="https://github.com/[GitHub Username]" target="_blank">[GitHub Username]</a></p>
+    
+    <hr>
+    
+    <h2>SUMMARY</h2>
+    <p>Entry-level DevOps Engineer transitioning from [Your Previous Field, e.g., healthcare, retail, education] with a passion for automation, cloud technologies, and system reliability. Skilled in scripting, cloud fundamentals, and deploying infrastructure using modern DevOps tools. Currently building hands-on projects and pursuing AWS certifications to accelerate a career in cloud engineering. Strong communicator and self-learner with a desire to contribute to high-performing technical teams.</p>
+    
+    <hr>
+    
+    <h2>SKILLS</h2>
+    <ul>
+        <li><strong>Languages:</strong> Bash, PowerShell, Python (boto3 primarily)</li>
+        <li><strong>DevOps &amp; Cloud:</strong> AWS (EC2, S3, IAM, Lambda, CloudFormation, CloudWatch), GitHub Actions, Terraform (IaC), Docker (basic), AWS CLI, EventBridge</li>
+        <li><strong>CI/CD &amp; Automation:</strong> GitHub Actions, Git, GitHub, CodePipeline (familiar), YAML</li>
+        <li><strong>Monitoring &amp; Logging:</strong> AWS CloudWatch, EC2 Logs</li>
+    </ul>
+    
+    <hr>
+    
+    <h2>PROJECTS</h2>
+    
+    <h3>Prompt Deployment Pipeline | Amazon Bedrock + S3 + GitHub Actions</h3>
+    <p><em>Use Case: Automate AI-powered content creation and publishing for static sites.</em></p>
+    <ul>
+        <li>Created a GitHub-based CI/CD workflow to process prompt templates and config files</li>
+        <li>Built a Python script (<code>process_prompt.py</code>) that:
+            <ul>
+                <li>Loads and renders prompt templates using variables from config files</li>
+                <li>Sends structured prompts to Amazon Bedrock for content generation</li>
+                <li>Saves outputs as <code>.html</code> or <code>.md</code> files and uploads to S3 for static website hosting</li>
+            </ul>
+        </li>
+        <li>Used environment-specific prefixes (<code>beta/</code>, <code>prod/</code>) to separate test and live content</li>
+        <li>Managed workflow triggers using PRs and merges, with secrets securely handled in GitHub Actions</li>
+    </ul>
+    
+    <h3>Multilingual Audio Pipeline | Amazon Transcribe + Translate + Polly + S3 + GitHub Actions</h3>
+    <p><em>Use Case: Automate voice-to-voice translation for .mp3 content.</em></p>
+    <ul>
+        <li>Developed a Python script (<code>process_audio.py</code>) to:
+            <ul>
+                <li>Upload input .mp3 files to S3</li>
+                <li>Transcribe English audio using Amazon Transcribe</li>
+                <li>Translate text into other languages with Amazon Translate</li>
+                <li>Generate multilingual speech using Amazon Polly</li>
+                <li>Save outputs to structured S3 paths for <code>transcripts/</code>, <code>translations/</code>, and <code>audio_outputs/</code></li>
+            </ul>
+        </li>
+        <li>Automated processing via GitHub Actions workflows for both PR (beta) and main (prod) branches</li>
+        <li>Used GitHub Secrets to securely manage AWS credentials and environment variables</li>
+    </ul>
+    
+    <h3>Two-Tier Web Architecture on AWS | EC2 + RDS + VPC</h3>
+    <p><em>Use Case: Deploy a secure and scalable content management website.</em></p>
+    <ul>
+        <li>Launched a custom VPC with public and private subnets, configured routing tables and Internet Gateway</li>
+        <li>Deployed CMS on an Ubuntu EC2 instance (web tier), with MySQL database hosted on Amazon RDS (database tier)</li>
+        <li>Hardened networking using security groups and subnet isolation (EC2 in public, RDS in private)</li>
+        <li>Verified application connectivity and documented the benefits of two-tier architecture</li>
+    </ul>
+    
+    <h3>EC2 Shutdown Automation | AWS Lambda + GitHub Actions + CloudFormation</h3>
+    <p><em>Use Case: Reduce unnecessary EC2 runtime costs for non-production environments.</em></p>
+    <ul>
+        <li>Built a Python Lambda function using <code>boto3</code> to identify and stop EC2 instances based on state and tags</li>
+        <li>Scheduled shutdowns via Amazon EventBridge</li>
+        <li>Created an S3-hosted deployment package and used CloudFormation templates to deploy the Lambda with IAM roles</li>
+        <li>Automated deployment using separate GitHub Actions workflows for beta and prod environments</li>
+        <li>Managed environment-specific parameters and AWS credentials using GitHub Secrets</li>
+    </ul>
+    
+    <hr>
+    
+    <h2>EXPERIENCE</h2>
+    <p><em>Optional section if you want to highlight transferable experience. Replace if applicable.</em></p>
+    
+    <h3>[Previous Job Title]</h3>
+    <p><strong>[Company Name]</strong> &ndash; [City, State]<br>
+    <em>[Start Date] - [End Date]</em></p>
+    <ul>
+        <li>[Responsibility that shows communication, attention to detail, or automation]</li>
+        <li>[Responsibility that demonstrates working under pressure, collaboration, or troubleshooting]</li>
+        <li>[Responsibility related to process improvement, documentation, or technology exposure]</li>
+    </ul>
+    
+    <hr>
+    
+    <h2>EDUCATION</h2>
+    <p><strong>High School Diploma</strong><br>
+    [High School Name], [City, State] &ndash; [Year]</p>
+    
+    <p><strong>[Optional] Bachelor of Science, [Your Major]</strong><br>
+    [University Name], [City, State] &ndash; [Year]</p>
+    
+    <hr>
+    
+    <h2>CERTIFICATIONS</h2>
+    <ul>
+        <li>AWS Certified Cloud Practitioner &ndash; <em>In Progress or Completed</em></li>
+        <li>AWS Certified Developer &ndash; Associate &ndash; <em>In Progress</em></li>
+        <li>Certified AI Practitioner (CAIP) &ndash; <em>In Progress</em></li>
+        <li>HashiCorp Certified: Terraform Associate &ndash; <em>Planned</em></li>
+    </ul>
+</body>
+</html>
